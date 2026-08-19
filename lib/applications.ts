@@ -1,7 +1,6 @@
 export type ApplicationIconKey = "calendar" | "clipboard" | "grid" | "shopping" | "tools";
 
 export type Application = {
-  category: string;
   description: string;
   iconKey: ApplicationIconKey;
   name: string;
@@ -14,7 +13,6 @@ export type Application = {
 export const applications: Application[] = [
   {
     name: "Leave Management",
-    category: "People operations",
     description: "Manage leave requests, approvals, balances, history, and related employee leave activities.",
     url: "/leave",
     iconKey: "calendar",
@@ -22,7 +20,6 @@ export const applications: Application[] = [
   },
   {
     name: "TGIF Ordering Portal",
-    category: "Team ordering",
     description: "View food campaigns, place orders, manage budgets, and review order history.",
     url: "/tgif",
     iconKey: "shopping",
@@ -30,7 +27,6 @@ export const applications: Application[] = [
   },
   {
     name: "Weekly Report Review",
-    category: "Team insights",
     description: "Review weekly task reports submitted by staff and keep up with team progress.",
     url: "https://nubiaville.sharepoint.com/sites/workflowdemo/Pages/ViewWeeklyReport.aspx",
     iconKey: "clipboard",

@@ -25,13 +25,12 @@ export function ApplicationCard({ application, index }: { application: Applicati
         <span className="app-card-index font-heading text-xs font-bold tracking-[0.14em]">{String(index + 1).padStart(2, "0")}</span>
       </div>
       <div className="relative mt-auto pt-12">
-        <p className="app-card-category text-xs font-bold uppercase tracking-[0.12em]">{application.category}</p>
-        <h2 className="font-heading mt-3 text-2xl font-bold tracking-[-0.035em] text-[var(--ink)]">{application.name}</h2>
+        <h2 className="font-heading text-2xl font-bold tracking-[-0.035em] text-[var(--ink)]">{application.name}</h2>
         <p className="mt-3 max-w-[31rem] text-sm leading-6 text-[var(--muted)]">{application.description}</p>
       </div>
       <div className="relative mt-6 flex items-center justify-between gap-3 border-t border-[var(--card-rule)] pt-4">
         <span className="text-sm font-bold text-[var(--ink)]">Open workspace</span>
-        <span className="app-card-launch grid size-10 shrink-0 place-items-center rounded-full" aria-hidden="true">
+        <span className="app-card-launch grid size-11 shrink-0 place-items-center rounded-full sm:size-10" aria-hidden="true">
           <ArrowUpRight className="size-4" strokeWidth={2.4} />
         </span>
       </div>
