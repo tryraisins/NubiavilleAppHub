@@ -1,0 +1,21 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/leave",
+      "destination": "https://YOUR_LEAVE_PROJECT.vercel.app/leave"
+    },
+    {
+      "source": "/leave/:path*",
+      "destination": "https://YOUR_LEAVE_PROJECT.vercel.app/leave/:path*"
+    },
+    {
+      "source": "/tgif",
+      "destination": "https://YOUR_TGIF_PROJECT.vercel.app/tgif"
+    },
+    {
+      "source": "/tgif/:path*",
+      "destination": "https://YOUR_TGIF_PROJECT.vercel.app/tgif/:path*"
+    }
+  ]
+}

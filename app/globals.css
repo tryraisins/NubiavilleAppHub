@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  --navy: #09086f;
+  --orange: #ff650d;
+  --page: #f4f7fb;
+  --surface: #ffffff;
+  --ink: #162033;
+  --muted: #6f7d92;
+  --border: #d8e0eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--page);
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--page);
+  background-image:
+    linear-gradient(rgba(9, 8, 111, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(9, 8, 111, 0.025) 1px, transparent 1px);
+  background-size: 34px 34px;
+  color: var(--ink);
+  font-family: "Aptos", "Segoe UI", sans-serif;
+}
+
+.font-heading {
+  font-family: "Aptos Display", "Trebuchet MS", sans-serif;
+}
+
+::selection {
+  background: #ffe0cf;
+  color: var(--navy);
+}
+
+:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
