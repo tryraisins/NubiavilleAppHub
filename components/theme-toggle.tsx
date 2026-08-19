@@ -1,22 +1,31 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 const storageKey = "nubiaville-theme";
 
-export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+function subscribeToTheme(onStoreChange: () => void) {
+  window.addEventListener("nubiaville-theme-change", onStoreChange);
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    window.removeEventListener("nubiaville-theme-change", onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
 
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
+function getThemeSnapshot() {
+  return document.documentElement.classList.contains("dark");
+}
+
+export function ThemeToggle() {
+  const isDark = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => false);
 
   function toggleTheme() {
     const nextTheme = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", nextTheme);
     localStorage.setItem(storageKey, nextTheme ? "dark" : "light");
-    setIsDark(nextTheme);
+    window.dispatchEvent(new Event("nubiaville-theme-change"));
   }
 
   return (

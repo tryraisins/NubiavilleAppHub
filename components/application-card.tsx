@@ -3,27 +3,36 @@ import { ArrowUpRight } from "lucide-react";
 import { ApplicationIcon } from "@/components/application-icon";
 import type { Application } from "@/lib/applications";
 
-export function ApplicationCard({ application }: { application: Application }) {
+export function ApplicationCard({ application, index }: { application: Application; index: number }) {
   return (
     <a
       href={application.url}
       target={application.newTab ? "_blank" : undefined}
       rel={application.newTab ? "noreferrer" : undefined}
-      className="group flex min-h-[17rem] cursor-pointer flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--card-shadow)] transition hover:-translate-y-0.5 hover:border-[var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)] focus-visible:outline-none sm:p-7"
+      aria-label={application.newTab ? `Open ${application.name} in a new tab` : `Open ${application.name}`}
+      data-tone={application.tone}
+      className="app-card group relative flex min-h-[21rem] cursor-pointer flex-col overflow-hidden rounded-[1.65rem] border p-5 shadow-[var(--card-shadow)] transition duration-300 hover:-translate-y-1 focus-visible:outline-none sm:p-6"
     >
-      <div className="flex items-start justify-between gap-4">
-        <span className="grid size-12 shrink-0 place-items-center rounded-xl border border-[var(--icon-border)] bg-[var(--icon-surface)] text-[var(--navy)]" aria-hidden="true">
-          <ApplicationIcon iconKey={application.iconKey} className="size-6" />
+      <div className="app-card-art" aria-hidden="true">
+        <span className="app-card-orbit app-card-orbit-one" />
+        <span className="app-card-orbit app-card-orbit-two" />
+        <span className="app-card-line" />
+      </div>
+      <div className="relative flex items-start justify-between gap-4">
+        <span className="app-card-icon grid size-12 shrink-0 place-items-center rounded-2xl" aria-hidden="true">
+          <ApplicationIcon iconKey={application.iconKey} className="size-5" strokeWidth={2} />
         </span>
+        <span className="app-card-index font-heading text-xs font-bold tracking-[0.14em]">{String(index + 1).padStart(2, "0")}</span>
       </div>
-      <div className="mt-7">
-        <h2 className="font-heading text-xl font-bold tracking-[-0.02em] text-[var(--ink)]">{application.name}</h2>
-        <p className="mt-3 max-w-[33rem] text-sm leading-6 text-[var(--muted)]">{application.description}</p>
+      <div className="relative mt-auto pt-12">
+        <p className="app-card-category text-xs font-bold uppercase tracking-[0.12em]">{application.category}</p>
+        <h2 className="font-heading mt-3 text-2xl font-bold tracking-[-0.035em] text-[var(--ink)]">{application.name}</h2>
+        <p className="mt-3 max-w-[31rem] text-sm leading-6 text-[var(--muted)]">{application.description}</p>
       </div>
-      <div className="mt-auto pt-7">
-        <span className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[var(--orange)] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-colors group-hover:bg-[var(--orange-hover)]">
-          Open application
-          <ArrowUpRight className="size-4" aria-hidden="true" />
+      <div className="relative mt-6 flex items-center justify-between gap-3 border-t border-[var(--card-rule)] pt-4">
+        <span className="text-sm font-bold text-[var(--ink)]">Open workspace</span>
+        <span className="app-card-launch grid size-10 shrink-0 place-items-center rounded-full" aria-hidden="true">
+          <ArrowUpRight className="size-4" strokeWidth={2.4} />
         </span>
       </div>
     </a>

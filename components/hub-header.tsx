@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 export function HubHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 shadow-[var(--header-shadow)] backdrop-blur-sm sm:px-6">
+    <header className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 shadow-[var(--header-shadow)] backdrop-blur-sm sm:px-6">
       <Link href="/" className="flex min-w-0 items-center gap-3 rounded-lg focus-visible:outline-none">
         <Image src="/nubiaville-logo.png" alt="Nubiaville" width={1600} height={260} priority className="block h-auto w-32 shrink-0 object-contain object-left dark:brightness-0 dark:invert sm:w-40" />
         <span className="hidden h-6 w-px bg-[var(--border)] sm:block" aria-hidden="true" />
