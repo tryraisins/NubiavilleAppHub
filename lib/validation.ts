@@ -14,15 +14,8 @@ export function applicationDraftFrom(input: unknown): ApplicationDraft {
   if (!input || typeof input !== "object") throw new Error("Application details are required.");
   const record = input as Record<string, unknown>;
   const url = text(record.url, "Launch URL", 2048);
-  if (!(url.startsWith("/") || /^https?:\/\//i.test(url))) {
-    throw new Error("Launch URL must start with /, http://, or https://.");
-  }
-  if (/^https?:\/\//i.test(url)) {
-    try {
-      new URL(url);
-    } catch {
-      throw new Error("Launch URL is not valid.");
-    }
+  if (!url.startsWith("/") || url.startsWith("//")) {
+    throw new Error("Launch URL must be a same-site path such as /leave.");
   }
 
   const iconKey = String(record.iconKey ?? "");

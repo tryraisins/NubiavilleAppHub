@@ -39,7 +39,7 @@ export default async function Home() {
                 Applications
               </h2>
               <p className="mt-1 text-sm text-[var(--muted)]">
-                Select an application to open it in a new tab.
+                Select an application to continue without leaving App Hub.
               </p>
             </div>
             <p className="hidden text-sm font-semibold text-[var(--muted)] sm:block">

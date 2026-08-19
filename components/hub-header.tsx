@@ -3,6 +3,7 @@ import Link from "next/link";
 import { LogOut, ShieldCheck } from "lucide-react";
 
 import { signOut } from "@/auth";
+import { PwaInstallButton } from "@/components/pwa-install-button";
 
 export function HubHeader({ admin, name }: { admin: boolean; name: string }) {
   return (
@@ -20,6 +21,7 @@ export function HubHeader({ admin, name }: { admin: boolean; name: string }) {
       </Link>
 
       <nav className="flex shrink-0 items-center gap-1.5" aria-label="Account">
+        <PwaInstallButton />
         {admin ? (
           <Link
             href="/admin"

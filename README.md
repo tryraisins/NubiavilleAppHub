@@ -1,6 +1,6 @@
 # Nubiaville App Hub
 
-Nubiaville App Hub is the secure launcher for Nubiaville workplace tools. It uses Microsoft Entra ID for sign-in and stores the hub catalogue and administrator access list in SharePoint. Each linked application remains independently deployed.
+Nubiaville App Hub is the secure, installable workspace for Nubiaville workplace tools. It uses Microsoft Entra ID for sign-in and stores the hub catalogue and administrator access list in SharePoint. Connected applications remain independently deployed, but are reached through App Hub paths so they stay inside the installed workspace.
 
 ## Local development
 
@@ -52,7 +52,7 @@ Use a blank SharePoint list. Keep the default **Title** field and rename its dis
 | `IsActive` | Show on App Hub | Yes/No | Default Yes |
 | `SortOrder` | Display order | Number, zero decimal places | Default `100` |
 
-`Available` records appear on the App Hub and open in a new browser tab. `Coming soon` records appear only when at least one exists. Inactive records remain in SharePoint but are hidden.
+`Available` records appear inside App Hub. Their launch URL must be a same-site path such as `/leave` or `/tgif`; external URLs are deliberately rejected so users stay in the installed workspace. `Coming soon` records appear only when at least one exists. Inactive records remain in SharePoint but are hidden.
 
 ### `AppHubAdmins`
 
@@ -74,6 +74,14 @@ Before setting `SHAREPOINT_ADMINS_LIST`, create active records with these values
 
 Until this list is connected (or while it is empty for first-time setup), those four Microsoft Entra accounts are the bootstrap administrators. Once the list has records, its active entries determine administrator access. The **Manage** page lets an active administrator add, edit, deactivate, and remove both applications and administrators.
 
+## Installed App Hub (PWA)
+
+App Hub has a root-scoped web app manifest and service worker. On a supported browser, the **Install** control appears in the App Hub header after the browser determines the app is installable. The installed app opens in standalone mode and navigation to an App Hub path remains in that same window.
+
+The service worker caches only the safe static app shell and an offline message. It does not cache signed-in application pages or SharePoint data, so a network connection is still required for Microsoft sign-in, current permissions, and workplace records.
+
+For a connected application to stay in the PWA, all of its links, assets, API calls, authentication callbacks, and redirects must be base-path-safe beneath its App Hub route. For example, the Leave application must work at `/leave`, and TGIF must work at `/tgif`. Their Vercel deployments are rewritten behind App Hub under the same origin; do not use external application URLs in the SharePoint catalogue.
+
 ## Vercel deployment
 
 1. Import this repository as a separate Vercel project.
@@ -81,7 +89,7 @@ Until this list is connected (or while it is empty for first-time setup), those 
 3. Deploy and complete a Microsoft Entra sign-in test with an ordinary user and one of the named administrators.
 4. If using the central portal domain, add `portal.nubiaville.com` under **Settings → Domains**, complete Vercel’s DNS instructions, and add the matching Entra callback URI above.
 
-`vercel.json` contains the independent-application rewrite placeholders. Replace them only after the Leave and TGIF deployments are confirmed safe to run beneath `/leave` and `/tgif`. Do not add a catch-all rewrite because it would capture the App Hub’s own routes.
+`vercel.json` contains the independent-application rewrite placeholders. Replace them only after the Leave and TGIF deployments are confirmed safe to run beneath `/leave` and `/tgif`. The base and wildcard rewrites are required for PWA-contained navigation. Do not add a catch-all rewrite because it would capture the App Hub’s own routes.
 
 ## Important security notes
 

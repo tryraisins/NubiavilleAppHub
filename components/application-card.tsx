@@ -37,7 +37,7 @@ export function ApplicationCard({ application }: { application: HubApplication }
       <div className="mt-auto pt-7">
         {isAvailable ? (
           <span className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[var(--orange)] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-colors group-hover:bg-[#db5105]">
-            Open in a new tab
+            Open application
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </span>
         ) : (
@@ -54,8 +54,6 @@ export function ApplicationCard({ application }: { application: HubApplication }
     return (
       <a
         href={application.url}
-        target="_blank"
-        rel="noreferrer"
         className="group flex min-h-[17rem] cursor-pointer flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_14px_32px_rgba(21,35,61,0.06)] transition hover:-translate-y-0.5 hover:border-[#aebbd0] hover:shadow-[0_18px_36px_rgba(9,8,111,0.1)] focus-visible:outline-none sm:p-7"
       >
         {content}
