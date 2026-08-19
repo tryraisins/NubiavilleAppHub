@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Nubiaville App Hub",
+  title: "App Hub | Nubiaville",
   description: "The central access point for Nubiaville tools.",
   icons: {
-    icon: "/nubiaville-logo.svg",
-    shortcut: "/nubiaville-logo.svg",
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
   },
 };
 

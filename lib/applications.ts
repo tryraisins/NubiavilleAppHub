@@ -1,75 +1,59 @@
 import type { LucideIcon } from "lucide-react";
-import {
-  CalendarCheck2,
-  ClipboardCheck,
-  FileWarning,
-  KeyRound,
-  ShoppingBag,
-} from "lucide-react";
+import { CalendarCheck2, ClipboardList, LayoutGrid, ShoppingBag, Wrench } from "lucide-react";
 
-export type ApplicationStatus = "available" | "pending" | "coming-soon";
+export const applicationIconMap = {
+  calendar: CalendarCheck2,
+  clipboard: ClipboardList,
+  grid: LayoutGrid,
+  shopping: ShoppingBag,
+  tools: Wrench,
+} as const satisfies Record<string, LucideIcon>;
 
-export type Application = {
+export type ApplicationIconKey = keyof typeof applicationIconMap;
+export type ApplicationStatus = "available" | "comingSoon";
+
+export type HubApplication = {
   description: string;
-  href?: string;
-  icon: LucideIcon;
+  iconKey: ApplicationIconKey;
   id: string;
+  isActive: boolean;
   name: string;
+  sortOrder: number;
   status: ApplicationStatus;
-  statusLabel: string;
+  url: string;
 };
 
-export const applications: readonly Application[] = [
+export type ApplicationDraft = Omit<HubApplication, "id">;
+
+export const applicationIconOptions = Object.keys(applicationIconMap) as ApplicationIconKey[];
+
+export const fallbackApplications: HubApplication[] = [
   {
     id: "leave",
     name: "Leave Management",
-    description:
-      "Manage leave requests, approvals, balances, history, and related employee leave activities.",
-    href: "/leave",
-    icon: CalendarCheck2,
+    description: "Manage leave requests, approvals, balances, history, and related employee leave activities.",
+    url: "/leave",
+    iconKey: "calendar",
     status: "available",
-    statusLabel: "Available",
+    isActive: true,
+    sortOrder: 10,
   },
   {
     id: "tgif",
     name: "TGIF Ordering Portal",
-    description:
-      "View food campaigns, place orders, manage budgets, and review order history.",
-    href: "/tgif",
-    icon: ShoppingBag,
-    status: "pending",
-    statusLabel: "Available once /tgif is deployed",
-  },
-  {
-    id: "work-permit",
-    name: "Work Permit",
-    description: "Manage work-permit requests, supporting documents, and review milestones.",
-    icon: ClipboardCheck,
-    status: "coming-soon",
-    statusLabel: "Coming soon",
-  },
-  {
-    id: "attestation",
-    name: "Attestation",
-    description: "Prepare, request, and track employee attestations in one place.",
-    icon: FileWarning,
-    status: "coming-soon",
-    statusLabel: "Coming soon",
-  },
-  {
-    id: "access-management",
-    name: "Access Management",
-    description: "Request and manage access to the tools and resources you need.",
-    icon: KeyRound,
-    status: "coming-soon",
-    statusLabel: "Coming soon",
-  },
-  {
-    id: "incident-reporting",
-    name: "Incident Reporting",
-    description: "Report, follow up on, and document workplace incidents responsibly.",
-    icon: FileWarning,
-    status: "coming-soon",
-    statusLabel: "Coming soon",
+    description: "View food campaigns, place orders, manage budgets, and review order history.",
+    url: "/tgif",
+    iconKey: "shopping",
+    status: "available",
+    isActive: true,
+    sortOrder: 20,
   },
 ];
+
+export function iconFor(key: string): LucideIcon {
+  return applicationIconMap[key as ApplicationIconKey] ?? applicationIconMap.grid;
+}
+
+export function statusLabel(status: ApplicationStatus) {
+  return status === "comingSoon" ? "Coming soon" : "Available";
+}

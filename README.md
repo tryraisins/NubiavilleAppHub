@@ -1,6 +1,6 @@
 # Nubiaville App Hub
 
-The App Hub is the standalone launcher for Nubiaville workplace tools. It owns the root experience for `portal.nubiaville.com`; each application behind it remains an independently deployed Vercel project.
+Nubiaville App Hub is the secure launcher for Nubiaville workplace tools. It uses Microsoft Entra ID for sign-in and stores the hub catalogue and administrator access list in SharePoint. Each linked application remains independently deployed.
 
 ## Local development
 
@@ -8,48 +8,83 @@ Use Node.js 20.9 or later.
 
 ```bash
 npm install
+copy .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Production checks are available with:
+Open [http://localhost:3000](http://localhost:3000). Before running the application, fill in the Microsoft Entra ID and SharePoint values in `.env.local`.
 
 ```bash
 npm run lint
 npm run build
-npm run start
 ```
 
-## Deploy to Vercel
+## Microsoft Entra ID setup
 
-1. Create a new Vercel project from this repository (do not import it into the Leave or TGIF projects).
-2. In `vercel.json`, replace `YOUR_LEAVE_PROJECT.vercel.app` with the Leave project's production Vercel hostname, and replace `YOUR_TGIF_PROJECT.vercel.app` with the TGIF project's production Vercel hostname. Keep the `/leave` and `/tgif` path segments in every destination.
-3. Deploy the App Hub project.
-4. In the App Hub Vercel project's **Settings → Domains**, add `portal.nubiaville.com` and complete the DNS records Vercel provides.
+Create a dedicated **App registration** for App Hub, or add these redirect URIs to the existing registration used by the Leave application. Keep the client secret private and place it only in `.env.local` and Vercel environment variables.
 
-The custom-domain assignment and external rewrite behavior must be checked against the real deployments after this configuration is complete.
+1. In Microsoft Entra ID, register a single-tenant web application for Nubiaville.
+2. Add a Web redirect URI for local development:
+   `http://localhost:3000/api/auth/callback/microsoft-entra-id`
+3. Add a production redirect URI:
+   `https://nubiaville-app-hub.vercel.app/api/auth/callback/microsoft-entra-id`
+   If you later assign `portal.nubiaville.com`, add `https://portal.nubiaville.com/api/auth/callback/microsoft-entra-id` too.
+4. Under **API permissions**, add delegated SharePoint permissions for your tenant SharePoint resource: `AllSites.Read` and `AllSites.Write`. Grant tenant admin consent.
+5. Copy the Application (client) ID, Directory (tenant) ID, and create a client secret. Add them to the environment variables shown in `.env.example`.
 
-## Why the applications stay separate
+The app requests the signed-in user’s delegated SharePoint permissions. This mirrors the Leave application’s approach: SharePoint records retain the real Microsoft user in the built-in **Created By** and **Modified By** fields.
 
-Leave Management and the TGIF Ordering Portal have their own repositories, release cycles, environments, and Vercel deployments. This repository is deliberately only the central launcher and reverse-proxy entry point. It does not use Vercel Microfrontends and does not merge either application into a monorepo.
+## SharePoint lists
 
-## External Vercel rewrites
+Create both lists in the SharePoint site specified by `SHAREPOINT_BASE_URL`, then add their names to the Vercel environment variables. The internal column names below must be used exactly as written.
 
-`vercel.json` proxies requests from the App Hub to the independent deployments while the browser keeps the `portal.nubiaville.com` address. Both the base and wildcard rules are required, so `/leave` and `/leave/dashboard` remain visible as portal URLs. The destinations intentionally preserve the subpath:
+### `AppHubApplications`
 
-- `/leave` → `https://YOUR_LEAVE_PROJECT.vercel.app/leave`
-- `/leave/:path*` → `https://YOUR_LEAVE_PROJECT.vercel.app/leave/:path*`
-- `/tgif` → `https://YOUR_TGIF_PROJECT.vercel.app/tgif`
-- `/tgif/:path*` → `https://YOUR_TGIF_PROJECT.vercel.app/tgif/:path*`
+Use a blank SharePoint list. Keep the default **Title** field and rename its display name to **Application name** if preferred.
 
-Do not add a broad catch-all rewrite: it could take over the App Hub's own root pages.
+| Internal name | Display name | Type | Required / default |
+| --- | --- | --- | --- |
+| `Title` | Application name | Single line of text | Required |
+| `Description` | Description | Multiple lines of plain text | Required |
+| `ApplicationUrl` | Launch URL | Single line of text | Required |
+| `IconKey` | Icon | Choice: `calendar`, `clipboard`, `grid`, `shopping`, `tools` | Default `grid` |
+| `Status` | Status | Choice: `Available`, `Coming soon` | Default `Available` |
+| `IsActive` | Show on App Hub | Yes/No | Default Yes |
+| `SortOrder` | Display order | Number, zero decimal places | Default `100` |
 
-## Adding a future application
+`Available` records appear on the App Hub and open in a new browser tab. `Coming soon` records appear only when at least one exists. Inactive records remain in SharePoint but are hidden.
 
-1. Deploy the future application independently and make it safe to run at a dedicated base path, such as `/work-permit`.
-2. Add the typed card configuration in `lib/applications.ts` with its path, description, icon, and availability status.
-3. Add only that app's explicit base and wildcard external rewrites in `vercel.json`, preserving its base path in the rewrite destinations.
-4. Update this README and deploy the App Hub.
+### `AppHubAdmins`
 
-## TGIF prerequisite
+Use a second blank SharePoint list. Keep the default **Title** field and rename its display name to **Administrator email** if preferred.
 
-The TGIF project must first be independently updated and redeployed with `basePath: "/tgif"`. Its API calls, authentication callbacks, public assets, metadata, PWA manifest, and service worker also need to be `/tgif`-safe. The App Hub cannot provide that compatibility layer; do not enable the `/tgif` rewrite in production until TGIF is ready.
+| Internal name | Display name | Type | Required / default |
+| --- | --- | --- | --- |
+| `Title` | Administrator email | Single line of text | Required |
+| `DisplayName` | Display name | Single line of text | Optional |
+| `IsActive` | Active | Yes/No | Default Yes |
+| `Notes` | Notes | Multiple lines of plain text | Optional |
+
+Before setting `SHAREPOINT_ADMINS_LIST`, create active records with these values in **Title**:
+
+- `samuelo@nubiaville.onmicrosoft.com`
+- `ibikunle_johnson@nubiaville.onmicrosoft.com`
+- `oluwaseun_sowemimo@nubiaville.onmicrosoft.com`
+- `hr_executive@nubiaville.onmicrosoft.com`
+
+Until this list is connected (or while it is empty for first-time setup), those four Microsoft Entra accounts are the bootstrap administrators. Once the list has records, its active entries determine administrator access. The **Manage** page lets an active administrator add, edit, deactivate, and remove both applications and administrators.
+
+## Vercel deployment
+
+1. Import this repository as a separate Vercel project.
+2. Add every variable from `.env.example` under **Settings → Environment Variables**. Generate `AUTH_SECRET` with a secure random value, for example `openssl rand -base64 32`.
+3. Deploy and complete a Microsoft Entra sign-in test with an ordinary user and one of the named administrators.
+4. If using the central portal domain, add `portal.nubiaville.com` under **Settings → Domains**, complete Vercel’s DNS instructions, and add the matching Entra callback URI above.
+
+`vercel.json` contains the independent-application rewrite placeholders. Replace them only after the Leave and TGIF deployments are confirmed safe to run beneath `/leave` and `/tgif`. Do not add a catch-all rewrite because it would capture the App Hub’s own routes.
+
+## Important security notes
+
+- Never commit `.env.local`, client secrets, access tokens, or SharePoint URLs that are not intended to be public.
+- The admin page and all admin APIs verify the signed-in Microsoft Entra account on the server; hiding the Manage link alone is not treated as authorization.
+- SharePoint permissions should be granted only to the app registration and users who need access to the two lists.
