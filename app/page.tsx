@@ -10,7 +10,7 @@ export default function Home() {
         <section className="hub-intro pb-11 pt-14 sm:pb-14 sm:pt-20" aria-labelledby="page-title">
           <div>
             <p className="hub-kicker text-xs font-bold uppercase tracking-[0.15em]">Nubiaville workspace</p>
-            <h1 id="page-title" className="font-heading mt-4 max-w-3xl text-4xl font-extrabold tracking-[-0.055em] text-[var(--navy)] sm:text-5xl lg:text-6xl">Your tools, ready when work is.</h1>
+            <h1 id="page-title" className="font-heading mt-4 max-w-3xl text-4xl font-extrabold tracking-[-0.055em] text-[var(--navy)] sm:text-5xl lg:text-6xl">Your tools, ready.</h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-[var(--muted)] sm:text-lg">A focused starting point for the Nubiaville applications that keep your teams moving.</p>
           </div>
         </section>
