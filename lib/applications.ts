@@ -4,11 +4,11 @@ export type Application = {
   description: string;
   iconKey: ApplicationIconKey;
   name: string;
-  url: `/${string}`;
+  newTab?: boolean;
+  url: string;
 };
 
-// Add every App Hub application here. Routes must stay on this origin so they
-// continue inside the installed PWA window.
+// Add every App Hub application here. External apps open in a new browser tab.
 export const applications: Application[] = [
   {
     name: "Leave Management",
@@ -21,5 +21,12 @@ export const applications: Application[] = [
     description: "View food campaigns, place orders, manage budgets, and review order history.",
     url: "/tgif",
     iconKey: "shopping",
+  },
+  {
+    name: "Weekly Report Review",
+    description: "Review weekly task reports submitted by staff and keep up with team progress.",
+    url: "https://nubiaville.sharepoint.com/sites/workflowdemo/Pages/ViewWeeklyReport.aspx",
+    iconKey: "clipboard",
+    newTab: true,
   },
 ];

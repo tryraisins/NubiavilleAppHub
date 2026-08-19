@@ -36,7 +36,7 @@ export function PwaInstallButton() {
     <button
       type="button"
       onClick={install}
-      className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-bold text-[var(--navy)] transition hover:bg-[#edf2fb] focus-visible:outline-none"
+      className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-bold text-[var(--navy)] transition hover:bg-[var(--control-hover)] focus-visible:outline-none"
     >
       <Download className="size-4" aria-hidden="true" />
       <span className="hidden sm:inline">Install</span>
